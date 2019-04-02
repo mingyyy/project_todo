@@ -34,7 +34,9 @@
                       </div>
 
                       <div class="col-sm-4">
-                          {% if item.days_left == "Overdue!!!" %}
+                          {% if item.done is True %}
+                            <p style="background-color:LightGray;">Status: It's done! </p>
+                          {% elif item.days_left == "Overdue!!!" %}
                             <p style="background-color:Tomato;">Status: {{item.days_left}}</p>
                           {% elif item.days_left == "Due today!" %}
                             <p style="background-color:Orange;">Status: {{item.days_left}}</p>
