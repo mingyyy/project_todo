@@ -31,45 +31,41 @@ def index(request):
 
 def list(request, list_id):
     todo = TodoList.objects.get(id=list_id)
-    todoitems = todo.todoitem_set.all()
-    getitems = get_object_or_404(TodoList, id=list_id)
-    try:
-        selected_item=getitems.todoitem_set.get(id=request.POST['item.id'])
-    except(KeyError, TodoItem.DoesNotExist):
-        pass
-    else:
-        selected_item.done = True
-        selected_item.save()
+    num_completed = todo.completed
+    print(num_completed)
+    print(request.POST.getlist("done"))
+    for i in request.POST.getlist("done"):
+        todoitem=todo.todoitem_set.get(id=i)
+        todoitem.done=True
+        todoitem.save()
+        num_completed += 1
+    todo.completed = num_completed
+    todo.save()
 
-    getitems.completed.save()
-
-    if request.method == 'POST':
-        form = request.POST()
-        if form.is_valid():
-            form.save()
-            todoitems = todo.todoitem_set.all()
-
-    context = {"list":todo,"items": todoitems}
-    return HttpResponseRedirect(reverse('todolist:test_page', args=(list.id,)))
-
-def finish(request, item_id):
-    item = TodoItem.objects.get(id=item_id)
-    item.done = True
-    item.save()
-    return redirect("todolist/todo.html")
+    context = {"list":todo}
+    return render(request, 'todolist/todo.html', context)
 
 
 def update_item(request, list_id):
-
     list_content = TodoList.objects.get(id=list_id)
     items=TodoItem.objects.filter(list=list_id)
     # print(request.POST)
-    context = { "list": list_content, "items":items, "listid":list_id}
+    context = {"list": list_content, "items":items, "listid":list_id}
     return render(request, 'todolist/update_item.html', context)
 
 
 def test_item(request, list_id):
     todo = TodoList.objects.get(id=list_id)
+    num_completed = todo.completed
+    print(num_completed)
+    print(request.POST.getlist("done"))
+    for i in request.POST.getlist("done"):
+        todoitem=todo.todoitem_set.get(id=i)
+        todoitem.done=True
+        todoitem.save()
+        num_completed += 1
+    todo.completed = num_completed
+    todo.save()
+
     context = {"list":todo}
-    print(request.POST)
     return render(request, 'todolist/test.html', context)

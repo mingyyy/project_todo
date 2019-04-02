@@ -3,33 +3,29 @@
 {% block content %}
     <h3>Here is what you have to do:</h3>
     <br>
-    <p><h4>{{list}} ({{list.completed}} completed)</h4></p>
+    <p><h4>{{list}}: ({{list.completed}} completed)</h4></p>
     <br>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-    <form action="{% url 'todolist:update_item_page' list.id %}" method='post'>
-
+    <form action="{% url 'todolist:list_page' list.id %}" method='post'>
+    {% csrf_token%}
     <ol>
-        {% for item in items %}
+        {% for item in list.todoitem_set.all %}
             <li>
                 <h5>{{item.name}}</h5>
 
                 <div class="row">
                       <div class="col-sm-2">
-                          {% csrf_token%}
-
-                          {% if item.done is True%}
-                              <label class="checkbox-inline">Done:  <input type="checkbox" checked disabled data-toggle="toggle">
-
-                              </label>
+                          {% if item.done is False%}
+                              <label class="checkbox-inline">Done:</label >
+                                  <input type="checkbox" name="done" id="item{{ forloop.counter }}" value="{{ item.id }}" data-toggle="toggle">
                           {% else %}
-                              <label class="checkbox-inline">Done:  <input type="checkbox" data-toggle="toggle">
+                              <label class="checkbox-inline">Done:</label>
+                                  <input type="checkbox" checked disabled data-toggle="toggle">
 
-                              </label>
                           {% endif %}
                       </div>
                       <div class="col-sm-6">
-                          {% csrf_token%}
-
                           {% if item.done is True%}
                             {{item.description}}
                           {% else %}
@@ -46,16 +42,12 @@
                             <p>Status: {{item.days_left}} days left</p>
                           {% endif%}
                       </div>
-
                 </div>
-
             </li>
         {% endfor %}
-
     </ol>
 
-
-    <a href="{% url 'todolist:update_item_page' list.id %}"><button name="submit"  >Update my list</button></a>
+    <input type="submit" value="Update my list">
     </form>
 
 

@@ -17,8 +17,8 @@
 <form action="{% url 'todolist:test_page' list.id %}" method="post">
 {% csrf_token %}
 {% for item in list.todoitem_set.all %}
-    <input type="checkbox" name="completed" id="item{{ forloop.counter }}" value="{{ item.id }}">
-    <label for="item{{ forloop.counter }}">{{ item.name }}</label><br>
+    <input type="checkbox" name="done" id="item{{ forloop.counter }}" value="{{ item.id }}">
+    <label for="item{{ forloop.counter }}">{{item.name}}</label><br>
 {% endfor %}
 <input type="submit" value="update my list">
 </form>
