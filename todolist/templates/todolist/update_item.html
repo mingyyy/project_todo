@@ -1,0 +1,56 @@
+{% extends "todolist/base.html" %}
+
+{% block content %}
+    <h3>Here is what you have to do:</h3>
+    <br>
+    <p><h4>{{list}} ({{list.completed}} completed)</h4></p>
+    <br>
+
+
+    <ol>
+        {% for item in items %}
+            <li>
+                <h5>{{item.name}}</h5>
+
+                <div class="row">
+                      <div class="col-sm-2">
+                             <form  method='post'>
+                                  {% csrf_token %}
+
+                                  {% if item.done is True%}
+                                      Done: <label class="checkbox-inline"><input type="checkbox" checked disabled data-toggle="toggle"></label>
+                                  {% else %}
+                                         {{form.as_p}}
+                                  {% endif %}
+                             </form>
+                      </div>
+                      <div class="col-sm-6">
+                          {% if item.done is True%}
+                            {{item.description}}
+                          {% else %}
+                            {{item.description}}
+                          {% endif %}
+                      </div>
+
+                      <div class="col-sm-4">
+                          {% if item.days_left == "Overdue!!!" %}
+                            <p style="background-color:Tomato;">Status: {{item.days_left}}</p>
+                          {% elif item.days_left == "Due today!" %}
+                            <p style="background-color:Orange;">Status: {{item.days_left}}</p>
+                          {% else %}
+                            <p>Status: {{item.days_left}} days left</p>
+                          {% endif%}
+                      </div>
+
+                </div>
+
+            </li>
+        {% endfor %}
+
+    </ol>
+
+    <button name="submit"  >Update my list</button></a>
+
+
+
+{% endblock content %}
